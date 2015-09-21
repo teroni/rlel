@@ -106,7 +106,6 @@ namespace rlel {
             if (sisi) {
                 uri = "https://sisilogin.testeveonline.com//Account/LogOn?ReturnUrl=%2Foauth%2Fauthorize%2F%3Fclient_id%3DeveLauncherTQ%26lang%3Den%26response_type%3Dtoken%26redirect_uri%3Dhttps%3A%2F%2Fsisilogin.testeveonline.com%2Flauncher%3Fclient_id%3DeveLauncherTQ%26scope%3DeveClientToken%20user";
             }
-
             HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create(uri);
             req.Timeout = 5000;
             req.AllowAutoRedirect = true;
@@ -137,28 +136,32 @@ namespace rlel {
                 this.sisiToken = accessToken;
                 this.sisiTokenExpiration = DateTime.UtcNow + TimeSpan.FromHours(11);
             }
-
+            
             return accessToken;
         }
 
         private string getSSOToken(string username, string password, bool sisi) {
             string accessToken = this.getAccessToken(username, password, sisi);
+            Debug.WriteLine(accessToken);
             string uri = "https://login.eveonline.com/launcher/token?accesstoken=" + accessToken;
             if (accessToken == null)
                 return null;
             if (sisi) {
                 uri = "https://sisilogin.testeveonline.com/launcher/token?accesstoken=" + accessToken;
             }
+            Debug.WriteLine(uri);
             HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create(uri);
             req.Timeout = 5000;
             req.AllowAutoRedirect = false;
             HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
             string ssoToken = this.extractAccessToken(resp.GetResponseHeader("Location"));
+            Debug.WriteLine("test");
             resp.Close();
             return ssoToken;
         }
 
         private string extractAccessToken(string urlFragment) {
+            Debug.WriteLine("extracting");
             const string search = "#access_token=";
             int start = urlFragment.IndexOf(search);
             if (start == -1)
