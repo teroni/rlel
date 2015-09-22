@@ -14,6 +14,6 @@
         <Button Name="addAccount" Content="Add Account" Click="addAccount_Click" Height="23" Width="90" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="313,155,0,0" />
         <Button Name="remove" Content="Remove" Click="remove_Click" Height="23" Width="90" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="313,184,0,0" />
         <Button Name="launch" Content="Launch" Click="launch_Click"  HorizontalAlignment="Left" VerticalAlignment="Top" Height="23" Width="90" Margin="313,126,0,0" />
-        <ListBox Name="accountsPanel" Margin="12,97,0,0" SelectionMode="Extended" HorizontalAlignment="Left" VerticalAlignment="Top" Width="295" SelectionChanged="accountsPanel_SelectionChanged" Height="247" />
+        <ListBox Name="accountsPanel" Margin="12,97,0,0" SelectionMode="Extended" HorizontalAlignment="Left" VerticalAlignment="Top" Width="295" SelectionChanged="accountsPanel_SelectionChanged" Height="247" MouseDoubleClick="accountsPanel_DoubleClick" />
     </Grid>
 </Window>

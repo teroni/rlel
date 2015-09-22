@@ -58,7 +58,7 @@ namespace rlel {
                 this.show_balloon(new string[] {"logging in", "missing username or password"}, System.Windows.Forms.ToolTipIcon.Error);
                 return;
             }
-            this.show_balloon(new string[] {"logging in", username}, System.Windows.Forms.ToolTipIcon.None);
+//            this.show_balloon(new string[] {"logging in", username}, System.Windows.Forms.ToolTipIcon.None);
             string ssoToken = null;
             try {
                 ssoToken = this.getSSOToken(username, this.password.Password, sisi);
@@ -68,11 +68,16 @@ namespace rlel {
                 this.show_balloon(new string[] {"logging in", e.Message}, System.Windows.Forms.ToolTipIcon.Error);
                 return;
             }
+            if (accessToken == null && ssoToken == null)
+            {
+                this.show_balloon(new string[] { "logging in", "Problem logging in, try the normal launcher until you get no error / EULA / security questions"}, System.Windows.Forms.ToolTipIcon.Error);
+                return;
+            }
             if (ssoToken == null) {
                 this.show_balloon(new string[] {"logging in", "invalid username/password"}, System.Windows.Forms.ToolTipIcon.Error);
                 return;
             }
-            this.show_balloon(new string[] {"logging in", "launching"}, System.Windows.Forms.ToolTipIcon.None);
+//            this.show_balloon(new string[] {"logging in", "launching"}, System.Windows.Forms.ToolTipIcon.None);
             string args;
             string dx9 = "dx11";
             if (dx)
@@ -102,9 +107,9 @@ namespace rlel {
                 return this.tranqToken;
             if (sisi && sisiToken != null && DateTime.UtcNow < this.sisiTokenExpiration)
                 return this.sisiToken;
-            string uri = "https://login.eveonline.com/Account/LogOn?ReturnUrl=%2Foauth%2Fauthorize%2F%3Fclient_id%3DeveLauncherTQ%26lang%3Den%26response_type%3Dtoken%26redirect_uri%3Dhttps%3A%2F%2Flogin.eveonline.com%2Flauncher%3Fclient_id%3DeveLauncherTQ%26scope%3DeveClientToken";
+            string uri = "https://login.eveonline.com/Account/LogOn?ReturnUrl=%2Foauth%2Fauthorize%2F%3Fclient_id%3DeveLauncherTQ%26lang%3Den%26response_type%3Dtoken%26redirect_uri%3Dhttps%3A%2F%2Flogin.eveonline.com%2Flauncher%3Fclient_id%3DeveLauncherTQ%26scope%3DeveClientToken%20user";
             if (sisi) {
-                uri = "https://sisilogin.testeveonline.com//Account/LogOn?ReturnUrl=%2Foauth%2Fauthorize%2F%3Fclient_id%3DeveLauncherTQ%26lang%3Den%26response_type%3Dtoken%26redirect_uri%3Dhttps%3A%2F%2Fsisilogin.testeveonline.com%2Flauncher%3Fclient_id%3DeveLauncherTQ%26scope%3DeveClientToken";
+                uri = "https://sisilogin.testeveonline.com//Account/LogOn?ReturnUrl=%2Foauth%2Fauthorize%2F%3Fclient_id%3DeveLauncherTQ%26lang%3Den%26response_type%3Dtoken%26redirect_uri%3Dhttps%3A%2F%2Fsisilogin.testeveonline.com%2Flauncher%3Fclient_id%3DeveLauncherTQ%26scope%3DeveClientToken%20user";
             }
 
             HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create(uri);
@@ -161,15 +166,12 @@ namespace rlel {
         private string extractAccessToken(string urlFragment) {
             const string search = "#access_token=";
             int start = urlFragment.IndexOf(search);
-            if (start == -1)
+            if (start == -1) {
                 return null;
+            }
             start += search.Length;
             string accessToken = urlFragment.Substring(start, urlFragment.IndexOf('&') - start);
             return accessToken;
-        }
-
-        private void UserControl_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) {
-            this.launch_Click(this, new RoutedEventArgs());
         }
     }
 }
