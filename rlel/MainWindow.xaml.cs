@@ -108,9 +108,9 @@ namespace rlel {
                 }
             }
 
-            Thread update_check = new Thread(() => this.updater());
-            update_check.SetApartmentState(ApartmentState.STA);
-            update_check.Start();
+//            Thread update_check = new Thread(() => this.updater());
+//            update_check.SetApartmentState(ApartmentState.STA);
+//            update_check.Start();
             this.evePath.Text = Properties.Settings.Default.TranqPath;
             this.tray = new System.Windows.Forms.NotifyIcon();
             this.tray.Icon = System.Drawing.Icon.ExtractAssociatedIcon(Application.ResourceAssembly.Location);
@@ -471,7 +471,7 @@ namespace rlel {
                     this.pass.Password = ((Account)this.accountsPanel.SelectedItem).password.Password;
             }
         }
-
+        
         private void launch_Click(object sender, RoutedEventArgs e) {
             bool sisi = (bool)this.singularity.IsChecked;
             bool dx9 = (bool)this.dx9.IsChecked;
@@ -498,6 +498,7 @@ namespace rlel {
         }
 
         private void updater() {
+            /*
             System.Net.WebClient wc = new System.Net.WebClient();
             string str = "";
             try {
@@ -513,6 +514,22 @@ namespace rlel {
             if (localversion < remoteversion) {
                 update u = new update();
                 u.ShowDialog();
+            }
+            */
+        }
+
+        private void accountsPanel_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e){
+            Debug.WriteLine("dbl_click");
+            bool sisi = (bool)this.singularity.IsChecked;
+            bool dx9 = (bool)this.dx9.IsChecked;
+            string path = Path.Combine(this.evePath.Text, "bin", "exefile.exe");
+            if (this.accountsPanel.SelectedItem != null)
+            {
+                Account acct = (Account)this.accountsPanel.SelectedItem;
+                string username = acct.username.Text;
+                SecureString password = acct.password.SecurePassword;
+                new Thread(() => acct.launchAccount(sisi, path, dx9, username, password)).Start();
+                Thread.Sleep(100); // there is a better way to fix this but meh for now
             }
         }
     }
